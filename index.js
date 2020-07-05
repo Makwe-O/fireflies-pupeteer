@@ -1,20 +1,17 @@
-const puppeteer = require('puppeteer');
+const { chromium, devices } = require('playwright');
 
 (async () => {
-  const browser = await puppeteer.launch();
+  const browser = await chromium.launch();
   const page = await browser.newPage();
   await page.goto('https://google.com', { waitUntil: 'networkidle' });
   // Type our query into the search bar
-  await page.type('fireflies note taking');
+  await page.fill('.gLFyf.gsfi', 'fireflies note taking');
 
-  await page.click('input[type="submit"]');
+  await page.keyboard.press('Enter');
 
-  // Wait for the results to show up
-  await page.waitForSelector('h3 a');
-
-  // Extract the results from the page
+  //  Extract the results from the page
   const links = await page.evaluate(() => {
-    const anchors = Array.from(document.querySelectorAll('h3 a'));
+    const anchors = Array.from(document.querySelectorAll('h3'));
     return anchors.map((anchor) => anchor.textContent);
   });
   console.log(links.join('\n'));
